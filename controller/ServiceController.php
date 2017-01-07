@@ -75,8 +75,9 @@ class ServiceController
             Flight::sendRouteResult(array('error_code' => 42000));
         }
         $params['size'] = empty($params['size']) ? 10 : $params['size'];
-        $params['size'] = empty($params['offset']) ? 0 : $params['offset'];
-
+        $params['offset'] = empty($params['offset']) ? 0 : $params['offset'];
+        $result = UserModel::getMessageList($params);
+        Flight::sendRouteResult(array("data" => $result));
     }
 
     /**
@@ -97,12 +98,15 @@ class ServiceController
 
     /**
      * 评价
-     * @param $params
      */
     public static function evaluate()
     {
-
-
+        $params = Flight::request()->data->getData();
+        if (empty($params['consultation_id']) || empty($params['evaluation'])) {
+            Flight::sendRouteResult(array('error_code' => 42000));
+        }
+        UserModel::evaluateConsultation($params['consultation_id'], $params['evaluation']);
+        Flight::sendRouteResult(array());
     }
 
     /**

@@ -55,27 +55,38 @@ class UserModel extends Model {
 				m.msg,
 				m.msg_type,
 				m.created_time";
-		$sql_body = "from consultation c
+		$sql_body = " from consultation c
 					inner JOIN message m on c.consultation_id = m.consultation_id
 					where 1 ";
 		if(!empty($params['consultation_id'])){
-			$sql_body .= " and c.consultation_id";
+			$sql_body .= " and c.consultation_id = {$params['consultation_id']}";
 		}
 		if(!empty($params['user_id'])){
-			$sql_body .= " and c.user_id";
+			$sql_body .= " and c.user_id = {$params['user_id']}";
 		}
 		if(!empty($params['msg_type'])){
-			$sql_body .= " and m.msg_type";
+			$sql_body .= " and m.msg_type = {$params['msg_type']}";
 		}
-		if(!empty($params['user_id'])){
-			$sql_body .= " and c.user_id";
+		if(!empty($params['status'])){
+			$sql_body .= " and c.status = {$params['status']}";
 		}
-		$sql .= $sql_body .static::paging_clause($params);
+		$sql .= $sql_body ." order by m.created_time" .static::paging_clause($params);
 		$result['message_list'] = Flight::db() -> getAll($sql);
 		$sql ="select count(1) ";
-		$sql .= $sql_body .static::paging_clause($params);
-		$result['total'] = Flight::db() -> getAll($sql);
+		$sql .= $sql_body;
+		$result['total'] = Flight::db() -> getOne($sql);
 		return $result;
+	}
+
+	public static function evaluateConsultation($consultation_id, $evaluation){
+		$now = date('Y-m-d H:i:s');
+		$sql = "update consultation
+			   set evaluation = {$evaluation},
+			   		status = 1,
+			   		finish_time = '{$now}'
+			   where consultation_id = {$consultation_id}";
+		\Logger::getLogger('Route')->info($sql);
+		Flight::db() -> exec($sql);
 	}
 }
 

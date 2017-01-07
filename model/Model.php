@@ -7,7 +7,7 @@ require_once __DIR__."/../tools/cls_basic_data.php";
 
 
 abstract class Model extends Tools\cls_basic_data {
-	var $dbname = 'weishop';           // database name
+	var $dbname = 'myshop';           // database name
 	var $tablename = '';				// table name
 	var $fields = array();				// list of fields in this table
 	var $primary_key = array();         // column(s) which form the primary key

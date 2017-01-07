@@ -142,27 +142,13 @@ function load_class($class)
     require_once $path;
 }
 spl_autoload_register('load_class');
-
-//try{
-//    $access_token=Flight::request()->cookies->AccessToken;
-//
-//    $CAT_Result=Flight::checkAccessToken();
-//    if($CAT_Result==0){
-//        setcookie('AccessToken', '', 0, '/');
-//        Flight::sendRouteResult(array(
-//            "error_code"=>'40001',
-//            "error_stack"=>'AccessToken Check Failed. Input AccessToken: '.$access_token."  for AppId ",
-//        ));
-//    }
-//
-//    Flight::start();
-//} catch(Exception $e){
-//    Logger::getLogger('Route')->error($e);
-//    Flight::sendRouteResult(array(
-//        "error_code"=>'50000',
-//        "error_stack"=>$e->getTraceAsString(),
-//    ));
-//
-//}
-
+try{
+    Flight::start();
+} catch(Exception $e){
+    Logger::getLogger('Route')->error($e);
+    Flight::sendRouteResult(array(
+        "error_code"=>'50000',
+        "error_stack"=>$e->getTraceAsString(),
+    ));
+}
 ?>

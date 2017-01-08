@@ -5,6 +5,7 @@ require_once 'tools/cls_utils_tools.php';
 use Flight;
 use Tools;
 use Model;
+use Model\UserModel;
 
 /**
 * 
@@ -12,36 +13,50 @@ use Model;
 class UserController
 {
     public static  function setRoute(){
-        Flight::route('GET /test1', array(get_called_class(), "Test"));
+        Flight::route('GET /user/getSkinType', array(get_called_class(), "getSkinType"));
+        Flight::route('GET /user/getSensitivityType', array(get_called_class(), "getSensitivityType"));
+        Flight::route('GET /user/getQuestionType', array(get_called_class(), "getQuestionType"));
+        Flight::route('GET /user/getMealHabitType', array(get_called_class(), "getMealHabitType"));
+        Flight::route('POST /user/addDiagnosis', array(get_called_class(), "addDiagnosis"));
+        Flight::route('GET /user/getDiagnosisList', array(get_called_class(), "getDiagnosisList"));
     }
     /**
      * 获取肤质
-     * @param $params
      */
-    public static function getSkinType($params){
+    public static function getSkinType(){
+        $params = Flight::request()->query->getData();
+        $result['skin_types'] = UserModel::getTypeList($params, static::getTableNameByType("skin"));
+        Flight::sendRouteResult($result);
     }
 
     /**
      * 获取过敏类型
      * @param $params
      */
-    public static function  getSensitivityType($params){
+    public static function  getSensitivityType(){
+        $params = Flight::request()->query->getData();
+        $result['sensitivity_types'] = UserModel::getTypeList($params, static::getTableNameByType("sensitivity"));
+        Flight::sendRouteResult($result);
     }
 
     /**
      * 获取问题类型
      * @param $params
      */
-    public static function getQuestionType($params){
-
+    public static function getQuestionType(){
+        $params = Flight::request()->query->getData();
+        $result['question'] = UserModel::getTypeList($params, static::getTableNameByType("question"));
+        Flight::sendRouteResult($result);
     }
 
     /**
      * 获取饮食习惯
      * @param $params
      */
-    public static function getMealHabitType($params){
-
+    public static function getMealHabitType(){
+        $params = Flight::request()->query->getData();
+        $result['meal_habit'] = UserModel::getTypeList($params, static::getTableNameByType("meal_habit"));
+        Flight::sendRouteResult($result);
     }
 
     /**
@@ -56,15 +71,42 @@ class UserController
      * 添加病例信息
      * @param $params
      */
-    public static function addDiagnosis($params){
-
+    public static function addDiagnosis(){
+        $params = Flight::request()->data->getData();
+        if (empty($params['user_id']) || empty($params['user_name'])) {
+            Flight::sendRouteResult(array('error_code' => 42000));
+        }
+        $diagnosis_id = UserModel::addDiagnosis($params);
+        Flight::sendRouteResult(array('diagnosis_id' => $diagnosis_id));
     }
 
     /**
      * 分页获取病例列表
      * @param $params
      */
-    public static function getDiagnosisList($params){
+    public static function getDiagnosisList(){
+        $params = Flight::request()->data->getData();
+        $diagnosis_list = UserModel::getDiagnosisList($params);
+        Flight::sendRouteResult(array('data' => $diagnosis_list));
+    }
+
+    private static function getTableNameByType($type){
+        $table_name = "";
+        switch($type){
+            case "skin":
+                $table_name = "skin_type";
+                break;
+            case "sensitivity":
+                $table_name = "sensitivity_type";
+                break;
+            case "question":
+                $table_name = "question_type";
+                break;
+            case "meal_habit":
+                $table_name = "meal_habit_type";
+                break;
+        }
+        return $table_name;
     }
 }
 

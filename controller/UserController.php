@@ -120,7 +120,8 @@ class UserController
             Flight::sendRouteResult(array('error_code' => 42000));
         }
         foreach($params['list'] as $item){
-            UserModel::addDiagnosis()
+            UserModel::insertOrUpdateCalender();
+
         }
         Flight::sendRouteResult($params);
     }

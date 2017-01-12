@@ -19,6 +19,8 @@ class UserController
         Flight::route('GET /user/getMealHabitType', array(get_called_class(), "getMealHabitType"));
         Flight::route('POST /user/addDiagnosis', array(get_called_class(), "addDiagnosis"));
         Flight::route('GET /user/getDiagnosisList', array(get_called_class(), "getDiagnosisList"));
+        Flight::route('POST /user/updateCalendar', array(get_called_class(), "updateCalendar"));
+
     }
     /**
      * 获取肤质
@@ -94,19 +96,34 @@ class UserController
         $table_name = "";
         switch($type){
             case "skin":
-                $table_name = "skin_type";
+                $table_name = "ims_cs_skin_type";
                 break;
             case "sensitivity":
-                $table_name = "sensitivity_type";
+                $table_name = "ims_cs_sensitivity_type";
                 break;
             case "question":
-                $table_name = "question_type";
+                $table_name = "ims_cs_question_type";
                 break;
             case "meal_habit":
-                $table_name = "meal_habit_type";
+                $table_name = "ims_cs_meal_habit_type";
                 break;
         }
         return $table_name;
+    }
+
+    /**
+     * 更新日历
+     */
+    public static function updateCalendar(){
+        $params = Flight::request()->data->getData();
+        if (empty($params['user_id']) || empty($params['user_name']) || empty($params['list'])) {
+            Flight::sendRouteResult(array('error_code' => 42000));
+        }
+        foreach($params['list'] as $item){
+            UserModel::insertOrUpdateCalender();
+
+        }
+        Flight::sendRouteResult($params);
     }
 }
 

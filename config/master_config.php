@@ -1,6 +1,5 @@
 <?php
 $master_config = array(
-    "upload_dir" => "D:/upload/"
+    "upload_dir" => "/data/upload"
 );
 ?>
-

@@ -56,7 +56,7 @@ class ServiceController
             $consultation_id = UserModel::createConsultation($params);
             //todo 咨询医生次数减一
             if (!empty($params['doctor_id'])) {
-
+                UserModel::editRestTimes(1, $params['user_id']);
             }
         } catch (\Exception $e) {
             Flight::db()->rollback();

@@ -23,6 +23,15 @@ class UserModel extends Model
         return Flight::db()->getRow($sql);
     }
 
+    public static function editRestTimes($cost_times, $user_id){
+        $sql = "update
+                    ims_cs_user_consulation_ext
+                set rest_times = rest_times - { $cost_times }
+                where
+                    user_id = { $user_id }";
+        return Flight::db()->exec($sql);
+    }
+
     public static function createConsultation($params)
     {
         $data = array(

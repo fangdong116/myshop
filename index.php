@@ -6,6 +6,7 @@ require_once 'tools/ObjContainer.php';
 require_once 'tools/cls_utils_tools.php';
 require_once('log4php/Logger.php');
 
+// require_once 'controller/ObjContainer.php';
 require_once 'model/ObjContainer.php';
 
 Logger::getLogger('Route')->debug($_SERVER);
@@ -55,23 +56,7 @@ Flight::route('/phpinfo', function(){
     phpinfo();
 });
 
-//tools for route
 
-/**
- * Usage as following: (Sinri 2015-05-08 Afternoon)
- *
- * # Normal response
- * Flight::sendRouteResult(array(
- *     // 'error_code'=>'200',// [Optional] This is by default as NoError.
- *     'data'=>'XXX', // Any response(s) needed.
- * ));
- *
- * # Error response
- * Flight::sendRouteResult(array(
- *     'error_code'=>'500', // Or Other error code, other than 200.
- *     // 'error_info'=>'Customized Info', // [Optional] It could be set by default with config.
- * ));
- **/
 Flight::map('sendRouteResult', function($data){
     $data = is_object($data)? get_object_vars($data) :$data;
 
@@ -96,23 +81,6 @@ Flight::map('sendRouteResult', function($data){
         Logger::getLogger("Route")->error($result);
 
         if($data['error_code'] == 50000) {
-//             $ts = @file_get_contents("config/alert.ts");
-//             if(empty($ts) || time() - intval($ts) > 600) {
-//                 $config = parse_ini_file('config/alert.ini');
-//                 $recipients = explode(',', $config['recipients']);
-//                 foreach($recipients as $r) {
-//                     $domain = Tools\ClsUtilsTools::$domain_array['allow']['api_domain'];
-//                     Tools\ClsMessageTools::sendSMS(
-//                         $r, 'juhe', 'message_alert_tpl',
-//                         array('error_code'=>$data['error_code'],
-//                               'url'=>"http://$domain:8080/?name=basic&lines=100&date="));
-//                 }
-//                 $handle = @fopen('config/alert.ts', 'w');
-//                 if(!empty($handle)) {
-//                     fprintf($handle, '%d', time());
-//                     fclose($handle);
-//                 }
-//             }
         }
     }else{
         $data['result'] = 'ok';
@@ -142,7 +110,9 @@ function load_class($class)
     require_once $path;
 }
 spl_autoload_register('load_class');
+
 try{
+
     Flight::start();
 } catch(Exception $e){
     Logger::getLogger('Route')->error($e);
@@ -150,5 +120,7 @@ try{
         "error_code"=>'50000',
         "error_stack"=>$e->getTraceAsString(),
     ));
+
 }
+
 ?>

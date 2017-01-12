@@ -155,6 +155,15 @@ class UserModel extends Model
         return Flight::db()->insert('ims_cs_diagnosis', $data);
     }
 
+    public static function addDiagnosisImg($diagnosis_id, $attach, $attach_path){
+        $data = array(
+            'diagnosis_id' => isset($diagnosis_id) ? $diagnosis_id : null,
+            'attach' => isset($attach) ? $attach : null,
+            'attach_path' => isset($attach_path) ? $attach_path : null,
+        );
+        return Flight::db()->insert('ims_cs_diagnosis_img', $data);
+    }
+
     public static function editDiagnosis($params)
     {
         $data = array(

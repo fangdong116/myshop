@@ -24,4 +24,15 @@
         <level value="debug" />
         <appender_ref ref="route_file_appender" />
     </logger>
+    <appender name="test_file_appender" class="LoggerAppenderDailyFile">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%date [%logger] %message%newline" />
+        </layout>
+        <param name="file" value="logs/test.%s.log" />
+        <param name="datePattern" value="Y-m-d" />
+    </appender>
+    <logger name="test">
+        <level value="debug" />
+        <appender_ref ref="test_file_appender" />
+    </logger>
 </configuration>

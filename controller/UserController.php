@@ -79,6 +79,11 @@ class UserController
             Flight::sendRouteResult(array('error_code' => 42000));
         }
         $diagnosis_id = UserModel::addDiagnosis($params);
+        if(isset($params['store_paths']) && !empty($params['store_paths'])){
+            foreach($params['store_paths'] as $path){
+                UserModel::addDiagnosisImg($diagnosis_id, $path['attach_path'], $path['attach_name']);
+            }
+        }
         Flight::sendRouteResult(array('diagnosis_id' => $diagnosis_id));
     }
 

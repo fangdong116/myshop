@@ -1,24 +1,23 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2017/1/12
+ * Time: 13:27
+ */
+
 
 namespace Controller;
-require_once 'tools/cls_utils_tools.php';
 use Flight;
-use Tools;
-use Model;
 
-/**
-* 
-*/
-class TestApi
+
+class CommonController
 {
     public static  function setRoute(){
-        Flight::route('GET /test',function(){
-            Flight::sendRouteResult(array("hello world"));
-        });
-        Flight::route('POST /test1', array(get_called_class(), "Test"));
+        Flight::route('POST /file/upload', array(get_called_class(), "uploadFile"));
+        Flight::route('POST /file/delete', array(get_called_class(), "delFile"));
     }
-
-    public static function Test(){
+    public static function uploadFile(){
         $files = Flight::request() -> files ->getData();
         $store_paths = array();
         $master_config = Flight::get('master_config');
@@ -44,7 +43,23 @@ class TestApi
         }
         Flight::sendRouteResult(array("store_paths" => $store_paths));
     }
+
+    public static function delFile(){
+        $params = Flight::request() -> data ->getData();
+        if (empty($params['attach_name'])) {
+            Flight::sendRouteResult(array('error_code' => 42000));
+        }
+        $master_config = Flight::get('master_config');
+        $upload_dir = $master_config['upload_dir'];
+        $success = true;
+        if (file_exists($upload_dir. $params['attach_name'])) {
+            $success = unlink($upload_dir. $params['attach_name']);
+        }
+        if($success){
+            Flight::sendRouteResult(array());
+        }else{
+            array('error_code' => 50001, 'error_info'=> '删除失败');
+        }
+
+    }
 }
-
-?>
-

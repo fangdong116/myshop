@@ -35,7 +35,7 @@ class CommonController
             if (file_exists($upload_dir. $file["name"]))
             {
                 $first_token  = strtok($file["name"], '.');
-                $second_token = strtok($first_token);
+                $second_token = strtok('.');
                 $file["name"] = $first_token . "_". time() . '.'.$second_token;
             }
             move_uploaded_file($file["tmp_name"], $upload_dir . $file["name"]);

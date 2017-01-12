@@ -8,7 +8,7 @@ use Model;
 use Model\UserModel;
 
 /**
-* 
+*
 */
 class UserController
 {
@@ -125,10 +125,15 @@ class UserController
             Flight::sendRouteResult(array('error_code' => 42000));
         }
         foreach($params['list'] as $item){
-            UserModel::insertOrUpdateCalender();
+            if(empty($item['dateline']) || empty($item['event_type']))
+            $year = date('Y', strtotime($item['dateline']));
+            $month = date('m', strtotime($item['dateline']));
+            $day = date('d', strtotime($item['dateline']));
+            UserModel::insertOrUpdateCalender($year, $month, $day, $item['dateline'],$item['event_type'],
+                $params['user_id'], $params['user_name']);
 
         }
-        Flight::sendRouteResult($params);
+        Flight::sendRouteResult(array());
     }
 }
 
